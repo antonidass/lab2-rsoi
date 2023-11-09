@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: GATEWAY_SERVICE
+  cloud:
+    gateway:
+      routes:
+        - id: car
+          uri: http://car:8070
+          predicates:
+            - Path=/api/v1/cars/**
+          filters:
+            - AddResponseHeader=X-Powered-By,Gateway Service
+        - id: rental
+          uri: http://rental:8060
+          predicates:
+            - Path=/api/v1/rental/**
+          filters:
+            - AddResponseHeader=X-Powered-By,Gateway Service
+        - id: payment
+          uri: http://payment:8050
+          predicates:
+            - Path=/api/v1/payment/**
+          filters:
+            - AddResponseHeader=X-PowereRd-By,Gateway Service
