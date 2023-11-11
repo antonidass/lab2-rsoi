@@ -16,20 +16,17 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: set up JDK 21
+      - name: set up JDK 15
         uses: actions/setup-java@v1
         with:
           java-version: 1.21
+
       - name: Gradle Build
         run: cd CarsService && ./gradlew build --exclude-task test
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: Package
-          path: CarsService/build/libs/*.jar
-          retention-days: 1
+
       - name: Build image
         run: cd CarsService && docker build -t car_service . --tag antonidass/rsoi2-car-service:latest
+
       - name: Publish Docker image
         env:
           DOCKERHUB_USR: ${{ secrets.DOCKERHUB_USR }}
@@ -52,20 +49,24 @@ jobs:
       - name: Gradle Test
         run: cd CarsService && ./gradlew test
 
-  car-docker-build-publish:
+  payment-build:
+    name: payment-build
     runs-on: ubuntu-latest
     environment: Deploy
-    needs: [car-unit-test]
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - uses: actions/download-artifact@v3
+      - uses: actions/checkout@v3
         with:
-          name: Package
-          path: ./
+          fetch-depth: 0
+      - name: set up JDK 15
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.21
+
+      - name: Gradle Build
+        run: cd PaymentService && ./gradlew build --exclude-task test
 
       - name: Build image
-        run: cd CarsService && docker build -t car_service . --tag antonidass/rsoi2-car-service:latest
+        run: cd PaymentService && docker build -t payment_service . --tag antonidass/rsoi2-payment-service:latest
 
       - name: Publish Docker image
         env:
@@ -73,8 +74,103 @@ jobs:
           DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
         run: |
           echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USR}" --password-stdin
-          docker push antonidass/rsoi2-car-service:latest
+          docker push antonidass/rsoi2-payment-service:latest
 
+  payment-unit-test:
+    runs-on: ubuntu-latest
+    environment: Deploy
+    needs: [payment-build]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+      - name: set up JDK 21
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.21
+      - name: Gradle Test
+        run: cd PaymentService && ./gradlew test
+
+  rental-build:
+    name: rental-build
+    runs-on: ubuntu-latest
+    environment: Deploy
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: set up JDK 15
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.21
+
+      - name: Gradle Build
+        run: cd RentalService && ./gradlew build --exclude-task test
+
+      - name: Build image
+        run: cd RentalService && docker build -t rental_service . --tag antonidass/rsoi2-rental-service:latest
+
+      - name: Publish Docker image
+        env:
+          DOCKERHUB_USR: ${{ secrets.DOCKERHUB_USR }}
+          DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
+        run: |
+          echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USR}" --password-stdin
+          docker push antonidass/rsoi2-rental-service:latest
+
+  rental-unit-test:
+    runs-on: ubuntu-latest
+    environment: Deploy
+    needs: [rental-build]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+      - name: set up JDK 21
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.21
+      - name: Gradle Test
+        run: cd RentalService && ./gradlew test
+
+  gateway-build:
+    name: gateway-build
+    runs-on: ubuntu-latest
+    environment: Deploy
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: set up JDK 15
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.21
+
+      - name: Maven Build
+        run: cd GatewayService && mvn -B clean package -DskipTests
+
+      - name: Build image
+        run: cd GatewayService && docker build -t gateway_service . --tag antonidass/rsoi2-gateway-service:latest
+
+      - name: Publish Docker image
+        env:
+          DOCKERHUB_USR: ${{ secrets.DOCKERHUB_USR }}
+          DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
+        run: |
+          echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USR}" --password-stdin
+          docker push antonidass/rsoi2-gateway-service:latest
+
+  gateway-unit-test:
+    runs-on: ubuntu-latest
+    environment: Deploy
+    needs: [gateway-build]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+      - name: set up JDK 21
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.21
+      - name: Maven Test
+        run: cd GatewayService && mvn -B test
   # deploy:
   #   name: deploy
   #   environment: Deploy
