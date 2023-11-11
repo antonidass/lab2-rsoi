@@ -28,6 +28,15 @@ jobs:
           name: Package
           path: CarsService/build/libs/*.jar
           retention-days: 1
+      - name: Build image
+        run: cd CarsService && docker build -t car_service . --tag antonidass/rsoi2-car-service:latest
+      - name: Publish Docker image
+        env:
+          DOCKERHUB_USR: ${{ secrets.DOCKERHUB_USR }}
+          DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
+        run: |
+          echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USR}" --password-stdin
+          docker push antonidass/rsoi2-car-service:latest
 
   car-unit-test:
     runs-on: ubuntu-latest
