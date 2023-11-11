@@ -20,7 +20,7 @@ services:
       retries: 5
 
   car:
-    image: antonidass/rsoi2-car-service
+    image: antonidass/rsoi2-car-service:latest
     container_name: car
     depends_on:
       postgres:
@@ -33,7 +33,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=test
 
   payment:
-    image: antonidass/rsoi2-payment-service
+    image: antonidass/rsoi2-payment-service:latest
     container_name: payment
     depends_on:
       postgres:
@@ -46,7 +46,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=test
 
   rental:
-    image: antonidass/rsoi2-rental-service
+    image: antonidass/rsoi2-rental-service:latest
     container_name: rental
     depends_on:
       postgres:
@@ -60,7 +60,7 @@ services:
       - GW=http://gw:8080/api/v1
 
   gw:
-    image: antonidass/rsoi2-gateway-service
+    image: antonidass/rsoi2-gateway-service:latest
     container_name: gateway_serivce
     depends_on:
       - rental
