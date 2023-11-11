@@ -204,7 +204,7 @@ jobs:
           script: |
             echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USR}" --password-stdin
             cd /opt/car-rental-service
-            docker compose up --build -d
+            docker-compose up --build -d
   # autograding:
   #   name: autograding
   #   environment: Deploy
