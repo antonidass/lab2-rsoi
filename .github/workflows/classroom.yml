@@ -194,7 +194,7 @@ jobs:
       - name: Run app on VM
         uses: appleboy/ssh-action@v1.0.0
         env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_USR: ${{ secrets.DOCKERHUB_USR }}
           DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -202,7 +202,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USERNAME}" --password-stdin
+            echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USR}" --password-stdin
             cd /opt/car-rental-service
             docker compose up --build -d
   # autograding:
