@@ -171,45 +171,45 @@ jobs:
           java-version: 1.21
       - name: Maven Test
         run: cd GatewayService && mvn -B test
-  # deploy:
-  #   name: deploy
-  #   environment: Deploy
-  #   runs-on: ubuntu-latest
-  #   needs: [car-docker-build-publish]
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
+  deploy:
+    name: deploy
+    environment: Deploy
+    runs-on: ubuntu-latest
+    needs:
+      [car-unit-test, payment-unit-test, rental-unit-test, gateway-unit-test]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Move to VM
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USR }}
+          key: ${{ secrets.ID_RSA }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "postgres,docker-compose.yml"
+          target: /opt/car-rental-service
 
-  #     - name: Move to VM
-  #       uses: appleboy/scp-action@v0.1.4
-  #       with:
-  #         host: ${{ secrets.DEPLOY_HOST }}
-  #         username: ${{ secrets.DEPLOY_USR }}
-  #         key: ${{ secrets.SSH_KEY }}
-  #         port: ${{ secrets.SSH_PORT }}
-  #         source: "postgres,docker-compose.yml"
-  #         target: /opt/person-service
-
-  #     - name: Run app on VM
-  #       uses: appleboy/ssh-action@v1.0.0
-  #       env:
-  #         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-  #         DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
-  #       with:
-  #         host: ${{ secrets.DEPLOY_HOST }}
-  #         username: ${{ secrets.DEPLOY_USR }}
-  #         key: ${{ secrets.SSH_KEY }}
-  #         port: ${{ secrets.SSH_PORT }}
-  #         script: |
-  #           echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USERNAME}" --password-stdin
-  #           cd /opt/person-service
-  #           docker compose up --build -d person_service
+      - name: Run app on VM
+        uses: appleboy/ssh-action@v1.0.0
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USR }}
+          key: ${{ secrets.ID_RSA }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USERNAME}" --password-stdin
+            cd /opt/person-service
+            docker compose up --build -d --force-recreate
   # autograding:
   #   name: autograding
   #   environment: Deploy
   #   runs-on: ubuntu-latest
-  #   needs: [deploy]
+  #   needs: [car-unit-test]
   #   steps:
   #     - name: Run API Tests
   #       uses: matt-ball/newman-action@master
