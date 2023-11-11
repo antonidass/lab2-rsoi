@@ -53,7 +53,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: Package
-          path: ./CarsService/build/libs
+          path: ./
 
       - name: Build image
         run: cd CarsService && docker build -t car_service . --tag antonidass/rsoi2-car-service:latest
