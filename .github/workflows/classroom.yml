@@ -186,7 +186,7 @@ jobs:
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USR }}
-          key: ${{ secrets.ID_RSA }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: "postgres,docker-compose.yml"
           target: /opt/car-rental-service
@@ -199,11 +199,11 @@ jobs:
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USR }}
-          key: ${{ secrets.ID_RSA }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
             echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USERNAME}" --password-stdin
-            cd /opt/person-service
+            cd /opt/car-rental-service
             docker compose up --build -d --force-recreate
   # autograding:
   #   name: autograding
