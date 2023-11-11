@@ -61,10 +61,10 @@ jobs:
 
       - name: Publish Docker image
         env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_USR: ${{ secrets.DOCKERHUB_USR }}
           DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
         run: |
-          echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USERNAME}" --password-stdin
+          echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USR}" --password-stdin
           docker push antonidass/rsoi2-car-service:latest
 
   # deploy:
