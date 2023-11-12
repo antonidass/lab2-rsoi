@@ -10,3 +10,8 @@ CREATE TABLE payment
 );
 
 GRANT ALL PRIVILEGES ON payment TO program;
+
+CREATE SEQUENCE payment_id_seq;
+
+GRANT ALL PRIVILEGES ON payment_id_seq TO program;
+
