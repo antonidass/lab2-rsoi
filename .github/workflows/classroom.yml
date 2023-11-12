@@ -224,10 +224,22 @@ jobs:
         with:
           image: "antonidass/rsoi2-rental-service:latest"
 
+      - name: Setup db
+        run: |
+          docker-compose up -d postgres
+          docker-compose logs postgres
+          sleep 5
+          cd postgres
+          ./30-init-db.sh
+          cd ..
+
       - name: Run containers
         timeout-minutes: 5
         run: |
-          docker compose -f docker-compose.yml up -d --wait --wait-timeout 120
+          docker-compose up -d car
+          docker-compose up -d payment
+          docker-compose up -d rental
+          docker-compose up -d gw
           ./scripts/wait-script.sh
         env:
           WAIT_PORTS: 8080,8070,8060,8050
