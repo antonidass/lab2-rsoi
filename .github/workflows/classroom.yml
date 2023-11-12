@@ -213,7 +213,12 @@ jobs:
           docker-compose up -d payment
           docker-compose up -d rental
           docker-compose up -d gw
+          docker-compose logs car
+          docker-compose logs rental
+          docker-compose logs gw
+          docker-compose logs payment
           ./scripts/wait-script.sh
+          sleep 10
         env:
           WAIT_PORTS: 8080,8070,8060,8050
 
