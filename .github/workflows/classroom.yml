@@ -202,6 +202,7 @@ jobs:
           docker-compose logs postgres
           sleep 5
           cd postgres
+          chmod +x ./30-init-db.sh
           ./30-init-db.sh
           cd ..
 
