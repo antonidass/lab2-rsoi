@@ -299,8 +299,7 @@ jobs:
             docker-compose pull
             docker-compose up --build -d
 
-
- autograde:
+  autograde:
     name: Autograding
     runs-on: ubuntu-latest
     needs: [deploy]
@@ -315,6 +314,6 @@ jobs:
           google_token: ${{secrets.GOOGLE_API_KEY}}
           sheet_id: "1xkgjUX6Qmk7rdJG-QPOToav-HWWtthJjnShIKnw3oIY"
           homework_number: 2
-          user_column: 'D'
-          column_offset: 'F'
+          user_column: "D"
+          column_offset: "F"
           mark: "'+"
