@@ -207,7 +207,7 @@ jobs:
           cd ..
 
       - name: Run containers
-        timeout-minutes: 5
+        timeout-minutes: 10
         run: |
           docker-compose up -d car
           docker-compose up -d payment
@@ -218,7 +218,6 @@ jobs:
           docker-compose logs gw
           docker-compose logs payment
           ./scripts/wait-script.sh
-          sleep 10
         env:
           WAIT_PORTS: 8080,8070,8060,8050
 
@@ -229,6 +228,14 @@ jobs:
           environment: v3/postman/environment.json
           delayRequest: 100
           reporters: '[ "cli" ]'
+
+      - name: Logs
+        timeout-minutes: 10
+        run: |
+          docker-compose logs car
+          docker-compose logs rental
+          docker-compose logs gw
+          docker-compose logs payment
 
       - name: Stop containers
         if: always()
