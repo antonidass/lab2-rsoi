@@ -226,6 +226,7 @@ jobs:
         timeout-minutes: 10
         run: |
           curl --location 'http://localhost:8080/api/v1/cars?page=1&size=10&showAll=false'
+          curl --location 'http://localhost:8080/api/v1/rental' --header 'X-User-Name: Test Max' --header 'Content-Type: application/json' --data '{"carUid": "109b42f3-198d-4c89-9276-a7520a7120ab","dateFrom": "2021-10-08","dateTo": "2021-10-11"}'
           docker-compose logs car
           docker-compose logs rental
           docker-compose logs gw
