@@ -213,6 +213,7 @@ jobs:
           docker-compose up -d payment
           docker-compose up -d rental
           docker-compose up -d gw
+          sleep 10
           docker-compose logs car
           docker-compose logs rental
           docker-compose logs gw
@@ -221,6 +222,15 @@ jobs:
         env:
           WAIT_PORTS: 8080,8070,8060,8050
 
+      - name: Logs
+        timeout-minutes: 10
+        run: |
+          curl --location 'http://localhost:8080/api/v1/cars?page=1&size=10&showAll=false'
+          docker-compose logs car
+          docker-compose logs rental
+          docker-compose logs gw
+          docker-compose logs payment
+
       - name: Run API Tests
         uses: matt-ball/newman-action@master
         with:
@@ -228,14 +238,6 @@ jobs:
           environment: v3/postman/environment.json
           delayRequest: 100
           reporters: '[ "cli" ]'
-
-      - name: Logs
-        timeout-minutes: 10
-        run: |
-          docker-compose logs car
-          docker-compose logs rental
-          docker-compose logs gw
-          docker-compose logs payment
 
       - name: Stop containers
         if: always()
