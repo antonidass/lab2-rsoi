@@ -14,3 +14,7 @@ CREATE TABLE rental
 );
 
 GRANT ALL PRIVILEGES ON rental TO program;
+
+CREATE SEQUENCE rental_id_seq;
+
+GRANT ALL PRIVILEGES ON rental_id_seq TO program;
