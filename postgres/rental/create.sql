@@ -1,6 +1,6 @@
 \c rentals;
 
-CREATE TABLE IF NOT EXISTS rents
+CREATE TABLE rental
 (
     id          SERIAL PRIMARY KEY,
     rental_uid  uuid UNIQUE              NOT NULL,
@@ -12,3 +12,5 @@ CREATE TABLE IF NOT EXISTS rents
     status      VARCHAR(20)              NOT NULL
         CHECK (status IN ('IN_PROGRESS', 'FINISHED', 'CANCELED'))
 );
+
+GRANT ALL PRIVILEGES ON rental TO program;

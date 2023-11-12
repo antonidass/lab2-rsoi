@@ -8,3 +8,5 @@ CREATE TABLE payment
         CHECK (status IN ('PAID', 'CANCELED')),
     price       INT         NOT NULL
 );
+
+GRANT ALL PRIVILEGES ON payment TO program;

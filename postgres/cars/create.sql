@@ -1,6 +1,6 @@
 \c cars;
 
-CREATE TABLE IF NOT EXISTS cars
+CREATE TABLE cars
 (
     id                  SERIAL PRIMARY KEY,
     car_uid             uuid UNIQUE NOT NULL,
@@ -13,3 +13,5 @@ CREATE TABLE IF NOT EXISTS cars
         CHECK (type IN ('SEDAN', 'SUV', 'MINIVAN', 'ROADSTER')),
     availability        BOOLEAN     NOT NULL
 );
+
+GRANT ALL PRIVILEGES ON cars TO program;
